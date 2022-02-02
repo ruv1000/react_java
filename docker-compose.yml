@@ -1,0 +1,51 @@
+version: '3'
+services:
+  java:
+    container_name: java
+    # image: allthethings/spring-boot-realworld-example-app
+    build: ./java
+    ports: 
+      - "8080:8080"
+    depends_on: 
+      - db
+    volumes:
+      - ./java:/app 
+    
+  # db:
+  #    image: postgres:12.1
+  #    container_name: db
+  #    working_dir: /home/gradle/project
+  #    environment:
+  #     POSTGRES_DB: "bank"
+  #     POSTGRES_USER: "myapp"
+  #     POSTGRES_PASSWORD: "myapp"
+    
+  #    ports: 
+  #      - '5432:5432'
+  #    volumes:
+  #      - ./postgres:/var/lib/postgresql/data
+  #      - ./java:/home/gradle/project
+
+  db:
+    container_name: db
+    image: mysql
+    working_dir: /app
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=myapp
+      - MYSQL_USER=myapp
+      - MYSQL_PASSWORD=myapp
+    ports: 
+      - "3316:3306"
+    volumes:
+      - ./mysql_db:/var/lib/mysql
+      - ./java:/app 
+  
+  react:
+    container_name: react
+    build: ./react
+    ports:
+      - "8081:80"
+    depends_on: 
+      - db
+      - java
